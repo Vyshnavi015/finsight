@@ -11,18 +11,28 @@ import {
   PiggyBank,
   Landmark,
 } from "lucide-react";
-function Dashboard() {
+function Dashboard({ darkMode, setDarkMode })  {
   return (
-    <div className="bg-[#050816] min-h-screen text-white md:flex">
+   <div
+  className={`min-h-screen md:flex transition-all duration-500 ${
+    darkMode
+      ? "bg-[#050816] text-white"
+      : "bg-gray-100 text-black"
+  }`}
+>
 
-      <Sidebar />
+      <Sidebar darkMode={darkMode} />
 
       <div className="flex-1 p-4 sm:p-6 xl:p-8 relative overflow-hidden">
 
-        <Topbar />
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-violet-500/20 blur-[120px] rounded-full" />
+        <Topbar
+  darkMode={darkMode}
+  setDarkMode={setDarkMode}
+/>
+<div className="absolute top-0 right-0 w-[300px] h-[300px] bg-violet-500/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
           <StatCard
+          darkMode={darkMode}
   title="Total Income"
   amount="₹50,000"
   color="bg-green-500"
@@ -30,6 +40,7 @@ function Dashboard() {
 />
 
 <StatCard
+  darkMode={darkMode}
   title="Expenses"
   amount="₹30,000"
   color="bg-red-500"
@@ -37,6 +48,7 @@ function Dashboard() {
 />
 
 <StatCard
+  darkMode={darkMode}
   title="Savings"
   amount="₹20,000"
   color="bg-blue-500"
@@ -44,6 +56,7 @@ function Dashboard() {
 />
 
 <StatCard
+  darkMode={darkMode}
   title="Balance"
   amount="₹20,000"
   color="bg-purple-500"
@@ -54,12 +67,12 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
 
-  <ExpenseChart />
+ <ExpenseChart darkMode={darkMode} />
 
-  <Transactions />
+  <Transactions darkMode={darkMode} />
 
-  <BudgetPlanner />
-   <SavingsGoal />
+  <BudgetPlanner darkMode={darkMode} />
+   <SavingsGoal darkMode={darkMode} />
 
 </div>
 

@@ -19,37 +19,100 @@ const budgets = [
   },
 ];
 
-function BudgetPlanner() {
+function BudgetPlanner({ darkMode }) {
   return (
-    <div className="bg-gradient-to-br from-[#111C44] to-[#0B1739] border border-white/10 rounded-2xl shadow-xl p-6">
+    <div
+      className={`rounded-2xl border shadow-xl p-6 transition-all duration-300 hover:-translate-y-1
+      ${
+        darkMode
+          ? "bg-gradient-to-br from-[#111C44] to-[#0B1739] border-white/10 text-white"
+          : "bg-white border-gray-200 text-black"
+      }`}
+    >
 
-      <h2 className="text-xl font-semibold mb-6">
-        Budget Planner
-      </h2>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
 
+        <h2 className="text-xl font-semibold">
+          Budget Planner
+        </h2>
+
+        <button
+          className={`text-sm transition-all duration-300
+          ${
+            darkMode
+              ? "text-violet-400 hover:text-violet-300"
+              : "text-violet-600 hover:text-violet-500"
+          }`}
+        >
+          View Details
+        </button>
+
+      </div>
+
+      {/* Budget Items */}
       <div className="space-y-6">
 
         {budgets.map((item, index) => {
+
           const percentage =
             (item.spent / item.total) * 100;
 
           return (
             <div key={index}>
 
-              <div className="flex justify-between mb-2">
+              {/* Top Row */}
+              <div className="flex items-center justify-between mb-3">
 
-                <h3 className="font-medium">
-                  {item.category}
-                </h3>
+                <div>
 
-                <p className="text-gray-400 text-sm">
-                  ₹{item.spent} / ₹{item.total}
-                </p>
+                  <h3 className="font-medium">
+                    {item.category}
+                  </h3>
+
+                  <p
+                    className={`text-sm mt-1
+                    ${
+                      darkMode
+                        ? "text-gray-400"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    ₹{item.spent.toLocaleString()} spent
+                  </p>
+
+                </div>
+
+                <div className="text-right">
+
+                  <p className="font-semibold">
+                    ₹{item.total.toLocaleString()}
+                  </p>
+
+                  <p
+                    className={`text-sm
+                    ${
+                      darkMode
+                        ? "text-gray-400"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {Math.round(percentage)}%
+                  </p>
+
+                </div>
 
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+              <div
+                className={`w-full h-3 rounded-full overflow-hidden
+                ${
+                  darkMode
+                    ? "bg-white/10"
+                    : "bg-gray-200"
+                }`}
+              >
 
                 <div
                   className={`${item.color} h-3 rounded-full transition-all duration-700 hover:brightness-110`}
@@ -65,6 +128,7 @@ function BudgetPlanner() {
         })}
 
       </div>
+
     </div>
   );
 }

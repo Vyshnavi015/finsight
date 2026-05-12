@@ -1,9 +1,11 @@
 import {
   Bell,
   Search,
+  Sun,
+  Moon,
 } from "lucide-react";
 
-function Topbar() {
+function Topbar({ darkMode, setDarkMode })  {
   const today = new Date();
 
   const formattedDate =
@@ -48,6 +50,17 @@ function Topbar() {
           />
 
         </div>
+
+        <button
+  onClick={() => setDarkMode(!darkMode)}
+  className="w-14 h-14 bg-[#111C44] border border-white/10 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300"
+>
+  {darkMode ? (
+    <Sun size={22} />
+  ) : (
+    <Moon size={22} />
+  )}
+</button>
 
         {/* Notification */}
         <button className="w-14 h-14 bg-[#111C44] border border-white/10 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all duration-300">

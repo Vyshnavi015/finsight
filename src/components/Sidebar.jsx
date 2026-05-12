@@ -27,10 +27,15 @@ const menuItems = [
   },
 ];
 
-function Sidebar() {
+function Sidebar({ darkMode })  {
   return (
-    <div className="hidden md:flex md:w-72 min-h-screen bg-[#0B1739] border-r border-white/10 flex flex-col justify-between p-6">
-
+<div
+  className={`hidden md:flex md:w-72 min-h-screen border-r border-white/10 flex-col justify-between p-6 transition-all duration-500 ${
+    darkMode
+      ? "bg-[#0B1739] text-white"
+      : "bg-white text-black"
+  }`}
+>
       {/* Top Section */}
       <div>
 
