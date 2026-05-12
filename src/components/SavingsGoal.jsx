@@ -1,29 +1,36 @@
 function SavingsGoal({ darkMode }) {
-  const saved = 70000;
-  const target = 100000;
 
-  const percentage =
-    (saved / target) * 100;
+  const saved = 50000;
+  const target = 80000;
+
+  const percentage = (saved / target) * 100;
 
   return (
+
     <div
-      className={`rounded-2xl border shadow-xl p-6 transition-all duration-300 hover:-translate-y-1
+      className={`relative overflow-hidden rounded-3xl border p-6 shadow-xl transition-all duration-500
+
       ${
         darkMode
-          ? "bg-gradient-to-br from-[#111C44] to-[#0B1739] border-white/10 text-white"
-          : "bg-white border-gray-200 text-black"
+          ? "border-white/10 bg-gradient-to-br from-[#111C44] to-[#0B1739] text-white"
+          : "border-gray-200 bg-white text-black"
       }`}
     >
 
+      {/* Glow Effect */}
+      {darkMode && (
+        <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+      )}
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
 
         <h2 className="text-xl font-semibold">
           Savings Goal
         </h2>
 
         <button
-          className={`text-sm transition-all duration-300
+          className={`text-sm font-medium transition-all duration-300
           ${
             darkMode
               ? "text-violet-400 hover:text-violet-300"
@@ -35,96 +42,13 @@ function SavingsGoal({ darkMode }) {
 
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
 
-        {/* Circle */}
-        <div className="relative w-48 h-48">
+        {/* Left Content */}
+        <div className="flex-1">
 
-          <svg
-            className="w-48 h-48 rotate-[-90deg]"
-          >
-
-            {/* Gradient */}
-            <defs>
-
-              <linearGradient id="gradient">
-
-                <stop
-                  offset="0%"
-                  stopColor="#7C3AED"
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#3B82F6"
-                />
-
-              </linearGradient>
-
-            </defs>
-
-            {/* Background Circle */}
-            <circle
-              cx="96"
-              cy="96"
-              r="70"
-              stroke={
-                darkMode
-                  ? "rgba(255,255,255,0.1)"
-                  : "#E5E7EB"
-              }
-              strokeWidth="14"
-              fill="transparent"
-            />
-
-            {/* Progress Circle */}
-            <circle
-              cx="96"
-              cy="96"
-              r="70"
-              stroke="url(#gradient)"
-              strokeWidth="14"
-              fill="transparent"
-              strokeLinecap="round"
-              strokeDasharray={440}
-              strokeDashoffset={
-                440 -
-                (440 * percentage) / 100
-              }
-            />
-
-          </svg>
-
-          {/* Percentage */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-
-            <h1 className="text-4xl font-bold">
-              {Math.round(percentage)}%
-            </h1>
-
-            <p
-              className={`text-sm mt-1
-              ${
-                darkMode
-                  ? "text-gray-400"
-                  : "text-gray-500"
-              }`}
-            >
-              Completed
-            </p>
-
-          </div>
-
-        </div>
-
-        {/* Amount Section */}
-        <div className="mt-8 text-center">
-
-          <h3 className="text-3xl font-bold">
-
-            ₹{saved.toLocaleString()}
-
+          <h3 className="text-2xl font-semibold">
+            Buy Mobile
           </h3>
 
           <p
@@ -132,25 +56,106 @@ function SavingsGoal({ darkMode }) {
             ${
               darkMode
                 ? "text-gray-400"
-                : "text-gray-500"
+                : "text-gray-600"
             }`}
           >
-            saved from ₹
-            {target.toLocaleString()}
+            Target: ₹{target.toLocaleString()}
           </p>
+
+          {/* Saved Amount */}
+          <div className="mt-6">
+
+            <h1
+              className={`text-4xl font-bold
+              ${
+                darkMode
+                  ? "text-green-400"
+                  : "text-green-600"
+              }`}
+            >
+              ₹{saved.toLocaleString()}
+            </h1>
+
+            <span
+              className={`ml-2
+              ${
+                darkMode
+                  ? "text-gray-400"
+                  : "text-gray-600"
+              }`}
+            >
+              Saved
+            </span>
+
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mt-6">
+
+            {/* Background */}
+            <div
+              className={`h-3 w-full overflow-hidden rounded-full
+              ${
+                darkMode
+                  ? "bg-white/10"
+                  : "bg-gray-200"
+              }`}
+            >
+
+              {/* Progress */}
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-700"
+                style={{
+                  width: `${percentage}%`,
+                }}
+              />
+
+            </div>
+
+            {/* Footer */}
+            <div className="mt-3 flex items-center justify-between">
+
+              <p
+                className={`text-sm
+                ${
+                  darkMode
+                    ? "text-gray-400"
+                    : "text-gray-600"
+                }`}
+              >
+                You're doing great! Keep it up! 🎉
+              </p>
+
+              <span
+                className={`text-sm font-semibold
+                ${
+                  darkMode
+                    ? "text-white"
+                    : "text-black"
+                }`}
+              >
+                {Math.round(percentage)}%
+              </span>
+
+            </div>
+
+          </div>
 
         </div>
 
-        {/* Progress Info */}
-        <div
-          className={`mt-6 px-4 py-3 rounded-2xl text-sm
-          ${
-            darkMode
-              ? "bg-white/5 text-gray-300"
-              : "bg-gray-100 text-gray-600"
-          }`}
-        >
-          You're doing great! Keep saving 🚀
+        {/* Right Illustration */}
+        <div className="relative flex items-center justify-center">
+
+          {darkMode && (
+            <div className="absolute h-40 w-40 rounded-full bg-violet-500/20 blur-3xl" />
+          )}
+
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2920/2920329.png"
+            alt="Laptop"
+            className="relative z-10 w-40 drop-shadow-2xl"
+          />
+
         </div>
 
       </div>

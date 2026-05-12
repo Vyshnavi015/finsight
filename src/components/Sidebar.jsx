@@ -11,31 +11,39 @@ const menuItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    active: true,
+    key: "dashboard",
   },
   {
     title: "Transactions",
     icon: Wallet,
+    key: "transactions",
   },
   {
     title: "Goals",
     icon: Target,
+    key: "goals",
   },
   {
-    title: "Settings",
+    title: "Budget",
     icon: Settings,
+    key: "budget",
   },
 ];
 
-function Sidebar({ darkMode })  {
+function Sidebar({
+  darkMode,
+  activePage,
+  setActivePage,
+}) {
   return (
-<div
-  className={`hidden md:flex md:w-72 min-h-screen border-r border-white/10 flex-col justify-between p-6 transition-all duration-500 ${
-    darkMode
-      ? "bg-[#0B1739] text-white"
-      : "bg-white text-black"
-  }`}
->
+    <div
+      className={`hidden md:flex md:w-72 min-h-screen border-r border-white/10 flex-col justify-between p-6 transition-all duration-500 ${
+        darkMode
+          ? "bg-[#0B1739] text-white"
+          : "bg-white text-black"
+      }`}
+    >
+
       {/* Top Section */}
       <div>
 
@@ -46,7 +54,13 @@ function Sidebar({ darkMode })  {
             FinSight
           </h1>
 
-          <p className="text-gray-400 text-sm mt-2">
+          <p
+            className={`text-sm mt-2 ${
+              darkMode
+                ? "text-gray-400"
+                : "text-gray-500"
+            }`}
+          >
             Smart Finance Tracker
           </p>
 
@@ -56,18 +70,27 @@ function Sidebar({ darkMode })  {
         <div className="space-y-3">
 
           {menuItems.map((item, index) => {
+
             const Icon = item.icon;
+
+            const isActive =
+              activePage === item.key;
 
             return (
               <button
                 key={index}
+                onClick={() =>
+                  setActivePage(item.key)
+                }
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300
-                  
-                  ${
-                    item.active
-                      ? "bg-violet-600 shadow-lg shadow-violet-500/20"
-                      : "hover:bg-white/10"
-                  }
+
+                ${
+                  isActive
+                    ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20"
+                    : darkMode
+                    ? "hover:bg-white/10 text-gray-300"
+                    : "hover:bg-gray-100 text-gray-700"
+                }
                 `}
               >
 
@@ -89,11 +112,17 @@ function Sidebar({ darkMode })  {
       <div>
 
         {/* Profile Card */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4">
+        <div
+          className={`border rounded-2xl p-4 mb-4 transition-all duration-300 ${
+            darkMode
+              ? "bg-white/5 border-white/10"
+              : "bg-gray-100 border-gray-200"
+          }`}
+        >
 
           <div className="flex items-center gap-4">
 
-            <div className="w-12 h-12 rounded-full bg-violet-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-violet-500 flex items-center justify-center text-white">
 
               <User size={22} />
 
@@ -105,7 +134,13 @@ function Sidebar({ darkMode })  {
                 Priya
               </h3>
 
-              <p className="text-gray-400 text-sm">
+              <p
+                className={`text-sm ${
+                  darkMode
+                    ? "text-gray-400"
+                    : "text-gray-500"
+                }`}
+              >
                 Premium User
               </p>
 
