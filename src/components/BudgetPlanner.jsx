@@ -1,48 +1,71 @@
+const budgets = [
+  {
+    category: "Food",
+    spent: 8000,
+    total: 12000,
+    color: "bg-orange-500",
+  },
+  {
+    category: "Travel",
+    spent: 15000,
+    total: 20000,
+    color: "bg-blue-500",
+  },
+  {
+    category: "Shopping",
+    spent: 6000,
+    total: 10000,
+    color: "bg-pink-500",
+  },
+];
+
 function BudgetPlanner() {
-  const budgets = [
-    { category: "Food", budget: 10000, spent: 8000 },
-    { category: "Travel", budget: 4000, spent: 5000 },
-    { category: "Shopping", budget: 6000, spent: 7000 },
-    { category: "Bills", budget: 12000, spent: 10000 },
-  ];
-
   return (
-    <section id="budget" className="p-4 md:p-6 scroll-mt-24">
-      <h2 className="text-2xl md:text-3xl font-bold mb-6">Budget Planner</h2>
+    <div className="bg-gradient-to-br from-[#111C44] to-[#0B1739] border border-white/10 rounded-2xl shadow-xl p-6">
 
-      <div className="bg-white rounded-xl shadow-md p-6 h-96 hover:shadow-xl hover:scale-[1.02] transition duration-300">
+      <h2 className="text-xl font-semibold mb-6">
+        Budget Planner
+      </h2>
+
+      <div className="space-y-6">
+
         {budgets.map((item, index) => {
-          const exceeded = item.spent > item.budget;
+          const percentage =
+            (item.spent / item.total) * 100;
 
           return (
-            <div
-              key={index}
-              className="mb-4 border-b pb-4"
-            >
-              <div className="flex justify-between">
-                <h3 className="font-semibold">
+            <div key={index}>
+
+              <div className="flex justify-between mb-2">
+
+                <h3 className="font-medium">
                   {item.category}
                 </h3>
 
-                <span
-                  className={
-                    exceeded
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }
-                >
-                  {exceeded ? "Exceeded" : "Safe"}
-                </span>
+                <p className="text-gray-400 text-sm">
+                  ₹{item.spent} / ₹{item.total}
+                </p>
+
               </div>
 
-              <p>
-                Budget: ₹{item.budget} | Spent: ₹{item.spent}
-              </p>
+              {/* Progress Bar */}
+              <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+
+                <div
+                  className={`${item.color} h-3 rounded-full transition-all duration-700 hover:brightness-110`}
+                  style={{
+                    width: `${percentage}%`,
+                  }}
+                />
+
+              </div>
+
             </div>
           );
         })}
+
       </div>
-    </section>
+    </div>
   );
 }
 
