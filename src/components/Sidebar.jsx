@@ -6,6 +6,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const menuItems = [
   {
@@ -35,6 +36,7 @@ function Sidebar({
   activePage,
   setActivePage,
 }) {
+  const { user, logout } = useAuth();
   return (
     <div
       className={`hidden md:flex md:w-72 min-h-screen border-r border-white/10 flex-col justify-between p-6 transition-all duration-500 ${
@@ -131,7 +133,7 @@ function Sidebar({
             <div>
 
               <h3 className="font-semibold">
-                Priya
+                {user?.name || "User"}
               </h3>
 
               <p
@@ -141,7 +143,7 @@ function Sidebar({
                     : "text-gray-500"
                 }`}
               >
-                Premium User
+                {user?.email || ""}
               </p>
 
             </div>
@@ -151,7 +153,9 @@ function Sidebar({
         </div>
 
         {/* Logout */}
-        <button className="w-full flex items-center justify-center gap-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 p-4 rounded-2xl transition-all duration-300">
+        <button
+          onClick={logout}
+          className="w-full flex items-center justify-center gap-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 p-4 rounded-2xl transition-all duration-300">
 
           <LogOut size={20} />
 

@@ -4,8 +4,10 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 function Topbar({ darkMode, setDarkMode })  {
+  const { user } = useAuth();
   const today = new Date();
 
   const formattedDate =
@@ -23,7 +25,7 @@ function Topbar({ darkMode, setDarkMode })  {
       <div>
 
         <h1 className="text-4xl font-bold">
-          Welcome back, Priya 👋
+          Welcome back, {user?.name?.split(" ")[0] || "there"} 👋
         </h1>
 
         <p className="text-gray-400 mt-2">
@@ -71,9 +73,7 @@ function Topbar({ darkMode, setDarkMode })  {
 
         {/* Avatar */}
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-violet-500 to-blue-500 flex items-center justify-center text-lg font-bold">
-
-          P
-
+          {user?.name?.[0]?.toUpperCase() || "U"}
         </div>
 
       </div>

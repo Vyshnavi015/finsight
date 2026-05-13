@@ -1,120 +1,156 @@
-const http = require("http");
+require("dotenv").config();
 
+const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 
-const Transaction = require(
-  "./models/Transaction"
-);
+const Transaction = require("./models/Transaction");
+const Goal = require("./models/Goal");
+const authRoutes = require("./routes/auth");
+const authMiddleware = require("./middleware/auth");
 
-// MongoDB Atlas Connection
+const app = express();
+
+// ================= MIDDLEWARE =================
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+app.use(express.json());
+
+// Log all requests for debugging
+app.use((req, _res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// ================= MONGODB =================
 mongoose
-  .connect(
-    "mongodb+srv://vyshu:Vyshu%40015@cluster0.xxxqwid.mongodb.net/finsight?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(() => {
-    console.log(
-      "MongoDB Connected Successfully"
-    );
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected Successfully"))
+  .catch((err) => console.log(err));
 
-const server = http.createServer(
-  async (req, res) => {
+// ================= AUTH ROUTES =================
+app.use("/auth", authRoutes);
 
-    // CORS
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "*"
-    );
+// ================= TRANSACTIONS =================
 
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST"
-    );
-
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type"
-    );
-
-    // GET ALL TRANSACTIONS
-    if (
-      req.url === "/transactions" &&
-      req.method === "GET"
-    ) {
-
-      const transactions =
-        await Transaction.find();
-
-      res.writeHead(200, {
-        "Content-Type":
-          "application/json",
-      });
-
-      res.end(
-        JSON.stringify(transactions)
-      );
-    }
-
-    // POST TRANSACTION
-    else if (
-      req.url === "/transactions" &&
-      req.method === "POST"
-    ) {
-
-      let body = "";
-
-      req.on("data", (chunk) => {
-        body += chunk.toString();
-      });
-
-      req.on("end", async () => {
-
-        const data = JSON.parse(body);
-
-        const newTransaction =
-          new Transaction({
-
-            title: data.title,
-
-            amount: data.amount,
-
-            category: data.category,
-
-            source: data.source,
-          });
-
-        await newTransaction.save();
-
-        res.writeHead(201, {
-          "Content-Type":
-            "application/json",
-        });
-
-        res.end(
-          JSON.stringify({
-            message:
-              "Transaction Saved",
-            data: newTransaction,
-          })
-        );
-      });
-    }
-
-    // HOME ROUTE
-    else {
-
-      res.writeHead(200, {
-        "Content-Type": "text/plain",
-      });
-
-      res.end("Backend Running");
-    }
+app.get("/transactions", authMiddleware, async (req, res) => {
+  try {
+    const transactions = await Transaction.find({ userId: req.userId }).sort({
+      createdAt: -1,
+    });
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch transactions" });
   }
-);
+});
 
-server.listen(5000, () => {
-  console.log("Server started");
+app.post("/transactions", authMiddleware, async (req, res) => {
+  try {
+    const { title, amount, category, source } = req.body;
+
+    const newTransaction = await Transaction.create({
+      title,
+      amount,
+      category,
+      source,
+      userId: req.userId,
+    });
+
+    res.status(201).json({ message: "Transaction Saved", data: newTransaction });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save transaction" });
+  }
+});
+
+app.delete("/transactions/:id", authMiddleware, async (req, res) => {
+  try {
+    await Transaction.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+    res.json({ message: "Transaction Deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete Failed" });
+  }
+});
+
+app.put("/transactions/:id", authMiddleware, async (req, res) => {
+  try {
+    const { title, amount, category } = req.body;
+    const updated = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      { title, amount, category },
+      { returnDocument: "after" }
+    );
+    if (!updated) return res.status(404).json({ error: "Transaction not found" });
+    res.json({ message: "Transaction Updated", data: updated });
+  } catch (err) {
+    res.status(500).json({ error: "Update Failed" });
+  }
+});
+
+// ================= GOALS =================
+
+app.get("/goals", authMiddleware, async (req, res) => {
+  try {
+    const goals = await Goal.find({ userId: req.userId });
+    res.json(goals);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch goals" });
+  }
+});
+
+app.post("/goals", authMiddleware, async (req, res) => {
+  try {
+    const { title, saved, target } = req.body;
+
+    const newGoal = await Goal.create({
+      title,
+      saved,
+      target,
+      userId: req.userId,
+    });
+
+    res.status(201).json({ message: "Goal Saved", data: newGoal });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save goal" });
+  }
+});
+
+app.put("/goals/:id", authMiddleware, async (req, res) => {
+  try {
+    const { title, saved, target } = req.body;
+    const updated = await Goal.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      { title, saved, target },
+      { returnDocument: "after" }
+    );
+    if (!updated) return res.status(404).json({ error: "Goal not found" });
+    res.json({ message: "Goal Updated", data: updated });
+  } catch (err) {
+    res.status(500).json({ error: "Update Failed" });
+  }
+});
+
+app.delete("/goals/:id", authMiddleware, async (req, res) => {
+  try {
+    await Goal.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    res.json({ message: "Goal Deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Delete Failed" });
+  }
+});
+
+// ================= HOME =================
+app.get("/", (req, res) => {
+  res.send("Backend Running");
+});
+
+// ================= START =================
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
