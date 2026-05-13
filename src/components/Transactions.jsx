@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   ShoppingBag,
   Utensils,
@@ -5,38 +7,70 @@ import {
   Tv,
 } from "lucide-react";
 
-const transactions = [
-  {
-    title: "Shopping",
-    amount: "- ₹4,000",
-    time: "2 hours ago",
-    icon: ShoppingBag,
-    color: "bg-pink-500",
-  },
-  {
-    title: "Food",
-    amount: "- ₹1,200",
-    time: "5 hours ago",
-    icon: Utensils,
-    color: "bg-orange-500",
-  },
-  {
-    title: "Travel",
-    amount: "- ₹3,500",
-    time: "Yesterday",
-    icon: Car,
-    color: "bg-blue-500",
-  },
-  {
-    title: "Netflix",
-    amount: "- ₹799",
-    time: "2 days ago",
-    icon: Tv,
-    color: "bg-red-500",
-  },
-];
-
 function Transactions({ darkMode }) {
+
+  const [transactions, setTransactions] =
+    useState([]);
+
+  // Fetch Transactions
+  useEffect(() => {
+
+    fetch(
+      "http://localhost:5000/transactions"
+    )
+      .then((res) => res.json())
+
+      .then((data) => {
+
+        setTransactions(data);
+
+        console.log(data);
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+
+  }, []);
+
+  // Icon Mapping
+  const getIcon = (category) => {
+
+    switch (category) {
+
+      case "Shopping":
+        return ShoppingBag;
+
+      case "Food":
+        return Utensils;
+
+      case "Travel":
+        return Car;
+
+      default:
+        return Tv;
+    }
+  };
+
+  // Color Mapping
+  const getColor = (category) => {
+
+    switch (category) {
+
+      case "Shopping":
+        return "bg-pink-500";
+
+      case "Food":
+        return "bg-orange-500";
+
+      case "Travel":
+        return "bg-blue-500";
+
+      default:
+        return "bg-red-500";
+    }
+  };
+
   return (
     <div
       className={`rounded-2xl border shadow-xl p-6 transition-all duration-300 hover:-translate-y-1
@@ -70,13 +104,14 @@ function Transactions({ darkMode }) {
       {/* Transactions List */}
       <div className="space-y-4">
 
-        {transactions.map((item, index) => {
+        {transactions.map((item) => {
 
-          const Icon = item.icon;
+          const Icon =
+            getIcon(item.category);
 
           return (
             <div
-              key={index}
+              key={item._id}
               className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-300 hover:scale-[1.02]
               ${
                 darkMode
@@ -90,7 +125,9 @@ function Transactions({ darkMode }) {
 
                 {/* Icon */}
                 <div
-                  className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center shadow-lg`}
+                  className={`w-12 h-12 rounded-xl ${getColor(
+                    item.category
+                  )} flex items-center justify-center shadow-lg`}
                 >
                   <Icon size={20} />
                 </div>
@@ -110,7 +147,7 @@ function Transactions({ darkMode }) {
                         : "text-gray-500"
                     }`}
                   >
-                    {item.time}
+                    {item.category}
                   </p>
 
                 </div>
@@ -119,7 +156,9 @@ function Transactions({ darkMode }) {
 
               {/* Amount */}
               <p className="text-red-500 font-semibold text-sm sm:text-base">
-                {item.amount}
+
+                - ₹{item.amount}
+
               </p>
 
             </div>

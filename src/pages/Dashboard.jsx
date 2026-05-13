@@ -8,6 +8,8 @@ import Transactions from "../components/Transactions";
 import BudgetPlanner from "../components/BudgetPlanner";
 import SavingsGoal from "../components/SavingsGoal";
 
+import AddTransaction from "../components/AddTransaction";
+
 import {
   Wallet,
   ArrowDownCircle,
@@ -90,6 +92,8 @@ function Dashboard({
                 icon={Landmark}
               />
 
+              
+
             </div>
 
             {/* Dashboard Components */}
@@ -102,6 +106,8 @@ function Dashboard({
               <BudgetPlanner darkMode={darkMode} />
 
               <SavingsGoal darkMode={darkMode} />
+
+              <AddTransaction darkMode={darkMode} />
 
             </div>
 
