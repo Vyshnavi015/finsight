@@ -1,13 +1,6 @@
 import {
-  LayoutDashboard,
-  Wallet,
-  Target,
-  Settings,
-  LogOut,
-  User,
-  BarChart2,
-  Users,
-  ShieldCheck,
+  LayoutDashboard, Wallet, Target, Settings,
+  LogOut, User, BarChart2, Users, ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -20,15 +13,17 @@ function Sidebar({ darkMode, activePage, setActivePage }) {
     { title: "Goals",        icon: Target,           key: "goals"        },
     { title: "Budget",       icon: Settings,         key: "budget"       },
     { title: "Analytics",    icon: BarChart2,        key: "analytics"    },
-    ...(isAdmin ? [
-      { title: "Family",     icon: Users,            key: "family"       },
-    ] : []),
+    ...(isAdmin ? [{ title: "Family", icon: Users, key: "family" }] : []),
+    { title: "Settings",     icon: Settings,         key: "settings"     },
   ];
 
+  const initials = (user?.name || "U")[0].toUpperCase();
+
   return (
-    <div className={`hidden md:flex md:w-72 min-h-screen border-r border-white/10 flex-col justify-between p-6 transition-all duration-500 ${
-      darkMode ? "bg-[#0B1739] text-white" : "bg-white text-black"
-    }`}>
+    <div
+      className="hidden md:flex md:w-72 min-h-screen border-r flex-col justify-between p-6 transition-all duration-500"
+      style={{ background: "var(--bg-sidebar)", borderColor: "var(--border)", color: "var(--text-primary)" }}
+    >
       {/* Top */}
       <div>
         {/* Logo */}
@@ -36,13 +31,11 @@ function Sidebar({ darkMode, activePage, setActivePage }) {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
             FinSight
           </h1>
-          <p className={`text-sm mt-2 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-            Smart Finance Tracker
-          </p>
+          <p className="text-sm mt-2 theme-muted">Smart Finance Tracker</p>
           {isAdmin && (
             <div className="flex items-center gap-1 mt-2">
-              <ShieldCheck size={14} className="text-violet-400" />
-              <span className="text-xs text-violet-400 font-medium">Admin</span>
+              <ShieldCheck size={14} style={{ color: "var(--accent)" }} />
+              <span className="text-xs font-medium" style={{ color: "var(--accent)" }}>Admin</span>
             </div>
           )}
         </div>
@@ -56,13 +49,14 @@ function Sidebar({ darkMode, activePage, setActivePage }) {
               <button
                 key={item.key}
                 onClick={() => setActivePage(item.key)}
-                className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${
+                className="w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300"
+                style={
                   isActive
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-500/20"
-                    : darkMode
-                    ? "hover:bg-white/10 text-gray-300"
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
+                    ? { background: "var(--accent)", color: "#fff", boxShadow: `0 8px 24px var(--accent-glow)` }
+                    : { color: "var(--text-muted)" }
+                }
+                onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
+                onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
               >
                 <Icon size={22} />
                 <span className="font-medium">{item.title}</span>
@@ -75,25 +69,30 @@ function Sidebar({ darkMode, activePage, setActivePage }) {
       {/* Bottom */}
       <div>
         {/* Profile Card */}
-        <div className={`border rounded-2xl p-4 mb-4 transition-all duration-300 ${
-          darkMode ? "bg-white/5 border-white/10" : "bg-gray-100 border-gray-200"
-        }`}>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-violet-500 flex items-center justify-center text-white">
-              <User size={22} />
+        <div
+          className="rounded-2xl p-4 mb-4 border transition-all duration-300"
+          style={{ background: "rgba(255,255,255,0.04)", borderColor: "var(--border)" }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0"
+              style={{ background: user?.avatar ? "transparent" : "var(--accent)" }}
+            >
+              {user?.avatar
+                ? <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+                : initials
+              }
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold truncate">{user?.name || "User"}</h3>
-              <p className={`text-xs truncate ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                {user?.email || ""}
-              </p>
+              <h3 className="font-semibold text-sm truncate">{user?.name || "User"}</h3>
+              <p className="text-xs truncate theme-muted">{user?.email || ""}</p>
             </div>
           </div>
         </div>
 
         <button
           onClick={logout}
-          className="w-full flex items-center justify-center gap-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 p-4 rounded-2xl transition-all duration-300"
+          className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-300 bg-red-500/20 hover:bg-red-500/30 text-red-400"
         >
           <LogOut size={20} />
           Logout

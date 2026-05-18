@@ -13,7 +13,16 @@ export function AuthProvider({ children }) {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(({ user }) => setUser(user))
+      .then(({ user }) => {
+        setUser(user);
+        // Restore saved theme/accent from user profile
+        if (user.theme && user.theme !== "default") {
+          localStorage.setItem("finsight_theme", user.theme);
+        }
+        if (user.accentColor) {
+          localStorage.setItem("finsight_accent", user.accentColor);
+        }
+      })
       .catch(() => { localStorage.removeItem("token"); setToken(null); setUser(null); })
       .finally(() => setLoading(false));
   }, [token]);
@@ -22,6 +31,12 @@ export function AuthProvider({ children }) {
     localStorage.setItem("token", jwt);
     setToken(jwt);
     setUser(userData);
+    if (userData.theme && userData.theme !== "default") {
+      localStorage.setItem("finsight_theme", userData.theme);
+    }
+    if (userData.accentColor) {
+      localStorage.setItem("finsight_accent", userData.accentColor);
+    }
   }
 
   function logout() {
@@ -30,10 +45,14 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  function updateUser(updated) {
+    setUser((prev) => ({ ...prev, ...updated }));
+  }
+
   const isAdmin = user?.role === "admin";
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, updateUser, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

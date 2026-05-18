@@ -2,9 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── CSS Custom Properties (defaults = Default Dark theme) ── */
+:root {
+  --bg-page:      #050816;
+  --bg-sidebar:   #0B1739;
+  --bg-card:      #111C44;
+  --bg-input:     #0B1739;
+  --border:       rgba(255,255,255,0.1);
+  --text-primary: #ffffff;
+  --text-muted:   #9CA3AF;
+  --accent:       #8B5CF6;
+  --accent-hover: #7C3AED;
+  --accent-glow:  rgba(139,92,246,0.2);
+  --glow-color:   rgba(139,92,246,0.2);
+}
+
 body {
   margin: 0;
   font-family: Inter, sans-serif;
-  background: #050816;
-  color: white;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background 0.4s ease, color 0.3s ease;
 }
+
+/* ── Theme-aware utility classes ── */
+.theme-page     { background: var(--bg-page); color: var(--text-primary); }
+.theme-sidebar  { background: var(--bg-sidebar); }
+.theme-card     { background: var(--bg-card); border-color: var(--border); }
+.theme-input    { background: var(--bg-input); border-color: var(--border); color: var(--text-primary); }
+.theme-border   { border-color: var(--border); }
+.theme-muted    { color: var(--text-muted); }
+.theme-accent   { color: var(--accent); }
+.theme-accent-bg { background: var(--accent); }
+.theme-glow     { background: var(--glow-color); }
+
+/* Smooth theme transitions on all elements */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* Override transition for transforms/opacity (don't slow animations) */
+.transition-all, [class*="transition-"] {
+  transition-property: all;
+}
+
+/* Glassmorphism backdrop for glass theme */
+.glass-card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
